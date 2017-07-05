@@ -3,10 +3,13 @@ package pl.com.bottega.game.engine;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class Device {
+public class DeviceFactory {
 
-    public SoundDevice selectDevice() {
-        boolean ifCorrect = false;
+    public SoundDevice initializeDevice() {
+        return selectDevice();
+    }   // czy taki zabieg ma sens, w klasie jedna metoda(publiczna) wywołuję drugą(prywatną) ????????????????
+
+    private SoundDevice selectDevice() {
         int choice;
         do {
             say("wybierz urządzenie do wyświetlania wyników:");
@@ -17,17 +20,13 @@ public class Device {
             choice = scanner.nextInt();
         } while (!Pattern.matches("[1-3]", String.valueOf(choice)));
         if (choice == 1) {
-            SoundDevice sony = new SonyDevice();
-            return sony;
+            return new SonyDevice();
         } else if (choice == 2) {
-            SoundDevice bosse = new BosseDevice();
-            return bosse;
+            return new BosseDevice();
         } else {
-            SoundDevice manta = new MantaDevice();
-            return manta;
+            return new MantaDevice();
         }
     }
-
     private void say(String s) {
         System.out.println(s);
     }

@@ -14,16 +14,16 @@ public class ScoreBoard {
     private SoundDevice soundDev;
     private String soundOfVictory = "FANFARY!!";
 
-    public ScoreBoard(String name1, String name2, short maxRounds, SoundDevice soundDev) {
+    public ScoreBoard(String name1, String name2, short maxRounds, SoundDevice soundDevice) {
         this.name1 = name1;
         this.name2 = name2;
         this.maxRounds = maxRounds;
-        this.soundDev = soundDev;
+        this.soundDev = soundDevice;
     }
 
-    public void refresh(byte result) {
+    public void refresh(byte result, int counter, String name1, String name2) {
         if (result == -1) {
-            displaySummary();
+            displaySummary(counter, name1, name2);
             return;
         }
         switch (result) {
@@ -33,21 +33,29 @@ public class ScoreBoard {
             case 2:
                 points2++;
         }
-        displayCurrentState();
+        displayCurrentState(counter);
     }
 
-    private void displayCurrentState() {
-        say(name1 + ": " + points1 + " VS " + name2 + ": " + points2);
+    public String getName1() {
+        return name1;
     }
 
-    private void displaySummary() {
-        displayCurrentState();
+    public String getName2() {
+        return name2;
+    }
+
+    private void displayCurrentState(int counter) {
+        say("round " + (counter + 1) + ": " + name1 + ": " + points1 + " VS " + name2 + ": " + points2);
+    }
+
+    private void displaySummary(int counter, String name1, String name2) {  // dodałem wyświetlanie imienia gracza
+        displayCurrentState(counter);
         if (points1 == points2)
             say("remis");
         else {
-            String nr = points1 > points2 ? "1" : "2";
-            say("mecz wygrał: " + nr);
-            say(soundDev.playSound(soundOfVictory));    // dzwiek przy wygranej jednej ze stron
+            String winner = points1 > points2 ? name1 : name2;
+            say("mecz wygrał: " + winner);
+            soundDev.playSound(soundOfVictory);
         }
     }
 

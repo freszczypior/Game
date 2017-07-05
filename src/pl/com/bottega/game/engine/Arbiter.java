@@ -3,7 +3,7 @@ package pl.com.bottega.game.engine;
 public class Arbiter {
 
     private short courrentRound;
-    private short maxRounds;
+    short maxRounds;
 
     private Player player1;
     private Player player2;
