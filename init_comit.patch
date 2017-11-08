@@ -1,0 +1,295 @@
+Index: src/pl/com/bottega/game/application/GameApp.java
+===================================================================
+--- src/pl/com/bottega/game/application/GameApp.java	(date 1510131071000)
++++ src/pl/com/bottega/game/application/GameApp.java	(date 1510131071000)
+@@ -1,125 +0,0 @@
+-package pl.com.bottega.game.application;
+-
+-import java.util.Random;
+-import java.util.Scanner;
+-
+-public class GameApp {
+-    private static String userName;
+-    private static Scanner scanner5 = new Scanner(System.in);
+-    private static Random random = new Random();
+-    private static int points1;
+-    private static int points2;
+-    private static final String PAPER = "papier";
+-    private static final String ROCK = "kamien";
+-    private static final String SCISSORS = "nozyce";
+-
+-    public static void main(String[] args){
+-        readUserName();
+-        System.out.println("Witaj " + userName + " w grze PNK ");
+-
+-        int max = readRoundsCount();
+-        int counter = 0;
+-        while(counter < max) {
+-            counter++;
+-
+-            String hand1 = readUserHand();
+-            if (hand1 == null)
+-                return;
+-            String hand2 = generateComputerHand();
+-
+-            int result = calculateResult(hand1, hand2);//0 - remis, 1 - wygrał gracz1, 2 - wygrał gracz2
+-            countPoints(result);
+-            displayRoundResult(result);
+-        }
+-
+-        displayMatchResult();
+-    }
+-
+-    private static void readUserName(){
+-        System.out.print("Wpisz imię: ");
+-        userName = scanner5.nextLine();
+-    }
+-
+-    private static int readRoundsCount(){
+-        System.out.print("Podaj ilosc gier: ");
+-        int count = scanner5.nextInt();
+-        scanner5.nextLine();
+-        return count;
+-    }
+-
+-    private static String readUserHand(){
+-        System.out.println("Wpisz: kamien, nozyce, papier");
+-
+-        String hand = scanner5.nextLine();
+-        if (!(hand.equals(ROCK) || hand.equals(SCISSORS) || hand.equals(PAPER))) {
+-            System.out.println("input error");
+-            return null;
+-        }
+-
+-        return hand;
+-    }
+-
+-    private static String generateComputerHand() {
+-        //Random random = new Random();
+-        int r = random.nextInt(3);
+-        String computerHand = null;
+-        switch (r) {
+-            case 0:
+-                computerHand = ROCK;
+-                break;
+-            case 1:
+-                computerHand = SCISSORS;
+-                break;
+-            case 2:
+-                computerHand = PAPER;
+-                break;
+-        }
+-
+-        return computerHand;
+-    }
+-
+-    private static int calculateResult(String p1, String p2){
+-        if (p1.equals(p2))
+-            return 0;
+-        else {
+-            //wygrywa P1
+-            if ((p1.equals(PAPER) && p2.equals(ROCK))
+-                    ||
+-                    (p1.equals(ROCK) && p2.equals(SCISSORS))
+-                    ||
+-                    (p1.equals(SCISSORS) && p2.equals(PAPER))) {
+-                return 1;
+-            } else {
+-                return 2;
+-            }
+-        }
+-    }
+-
+-
+-    private static void displayMatchResult(){
+-        if (points1 == points2)
+-            System.out.println("remis w meczu");
+-        else{
+-            if (points1 < points2)
+-                System.out.println("przegrałeś mecz");
+-            else
+-                System.out.println("wygrałeś mecz");
+-        }
+-    }
+-
+-    private static void displayRoundResult(int result) {
+-        if (result == 0)
+-            System.out.println("remis");
+-        else if (result == 1)
+-            System.out.println("wygrałeś rundę");
+-        else
+-            System.out.println("przegrałeś rundę");
+-    }
+-
+-    private static void countPoints(int result) {
+-        if (result == 1)
+-            points1++;
+-        else if (result == 2)
+-            points2++;
+-    }
+-}
+Index: src/pl/com/bottega/game/engine/SonyDevice.java
+===================================================================
+--- src/pl/com/bottega/game/engine/SonyDevice.java	(date 1510131071000)
++++ src/pl/com/bottega/game/engine/SonyDevice.java	(date 1510131071000)
+@@ -1,9 +0,0 @@
+-package pl.com.bottega.game.engine;
+-
+-public class SonyDevice implements SoundDevice{
+-
+-    @Override
+-    public void playSound(String sound) {
+-        System.out.println(sound);
+-    }
+-}
+Index: src/pl/com/bottega/game/engine/ScoreBoard.java
+===================================================================
+--- src/pl/com/bottega/game/engine/ScoreBoard.java	(date 1510131071000)
++++ src/pl/com/bottega/game/engine/ScoreBoard.java	(date 1510131071000)
+@@ -1,66 +0,0 @@
+-package pl.com.bottega.game.engine;
+-
+-
+-public class ScoreBoard {
+-
+-    private short points1;
+-    private short points2;
+-
+-    private String name1;
+-    private String name2;
+-
+-    private short maxRounds;
+-
+-    private SoundDevice soundDev;
+-    private String soundOfVictory = "FANFARY!!";
+-
+-    public ScoreBoard(String name1, String name2, short maxRounds, SoundDevice soundDevice) {
+-        this.name1 = name1;
+-        this.name2 = name2;
+-        this.maxRounds = maxRounds;
+-        this.soundDev = soundDevice;
+-    }
+-
+-    public void refresh(byte result, int counter, String name1, String name2) {
+-        if (result == -1) {
+-            displaySummary(counter, name1, name2);
+-            return;
+-        }
+-        switch (result) {
+-            case 1:
+-                points1++;
+-                break;
+-            case 2:
+-                points2++;
+-        }
+-        displayCurrentState(counter);
+-    }
+-
+-    public String getName1() {
+-        return name1;
+-    }
+-
+-    public String getName2() {
+-        return name2;
+-    }
+-
+-    private void displayCurrentState(int counter) {
+-        say("round " + (counter + 1) + ": " + name1 + ": " + points1 + " VS " + name2 + ": " + points2);
+-    }
+-
+-    private void displaySummary(int counter, String name1, String name2) {  // dodałem wyświetlanie imienia gracza
+-        displayCurrentState(counter);
+-        if (points1 == points2)
+-            say("remis");
+-        else {
+-            String winner = points1 > points2 ? name1 : name2;
+-            say("mecz wygrał: " + winner);
+-            soundDev.playSound(soundOfVictory);
+-        }
+-    }
+-
+-    private void say(String s) {
+-        System.out.println(s);
+-    }
+-
+-}
+Index: src/pl/com/bottega/game/engine/DeviceFactory.java
+===================================================================
+--- src/pl/com/bottega/game/engine/DeviceFactory.java	(date 1510131071000)
++++ src/pl/com/bottega/game/engine/DeviceFactory.java	(date 1510131071000)
+@@ -1,33 +0,0 @@
+-package pl.com.bottega.game.engine;
+-
+-import java.util.Scanner;
+-import java.util.regex.Pattern;
+-
+-public class DeviceFactory {
+-
+-    public SoundDevice initializeDevice() {
+-        return selectDevice();
+-    }   // czy taki zabieg ma sens, w klasie jedna metoda(publiczna) wywołuję drugą(prywatną) ????????????????
+-
+-    private SoundDevice selectDevice() {
+-        int choice;
+-        do {
+-            say("wybierz urządzenie do wyświetlania wyników:");
+-            say("1 - sony");
+-            say("2 - bosse");
+-            say("3 - manta");
+-            Scanner scanner = new Scanner(System.in);
+-            choice = scanner.nextInt();
+-        } while (!Pattern.matches("[1-3]", String.valueOf(choice)));
+-        if (choice == 1) {
+-            return new SonyDevice();
+-        } else if (choice == 2) {
+-            return new BosseDevice();
+-        } else {
+-            return new MantaDevice();
+-        }
+-    }
+-    private void say(String s) {
+-        System.out.println(s);
+-    }
+-}
+Index: src/pl/com/bottega/game/engine/MantaDevice.java
+===================================================================
+--- src/pl/com/bottega/game/engine/MantaDevice.java	(date 1510131071000)
++++ src/pl/com/bottega/game/engine/MantaDevice.java	(date 1510131071000)
+@@ -1,9 +0,0 @@
+-package pl.com.bottega.game.engine;
+-
+-public class MantaDevice implements SoundDevice {
+-
+-    @Override
+-    public void playSound(String sound) {
+-        System.out.println(sound);
+-    }
+-}
+\ No newline at end of file
+Index: src/pl/com/bottega/game/engine/BosseDevice.java
+===================================================================
+--- src/pl/com/bottega/game/engine/BosseDevice.java	(date 1510131071000)
++++ src/pl/com/bottega/game/engine/BosseDevice.java	(date 1510131071000)
+@@ -1,9 +0,0 @@
+-package pl.com.bottega.game.engine;
+-
+-public class BosseDevice implements SoundDevice {
+-
+-    @Override
+-    public void playSound(String sound) {
+-        System.out.println(sound);
+-    }
+-}
+\ No newline at end of file
+Index: src/pl/com/bottega/game/engine/SoundDevice.java
+===================================================================
+--- src/pl/com/bottega/game/engine/SoundDevice.java	(date 1510131071000)
++++ src/pl/com/bottega/game/engine/SoundDevice.java	(date 1510131071000)
+@@ -1,7 +0,0 @@
+-package pl.com.bottega.game.engine;
+-
+-
+-public interface SoundDevice {
+-
+-    void playSound(String sound);
+-}
