@@ -1,8 +1,8 @@
-package pl.com.knowosad.game1;
+package pl.com.knowosad.shooter;
 
-import pl.com.knowosad.game1.objects.Bullet;
-import pl.com.knowosad.game1.objects.Player;
-import pl.com.knowosad.game1.objects.Target;
+import pl.com.knowosad.shooter.objects.Bullet;
+import pl.com.knowosad.shooter.objects.Player;
+import pl.com.knowosad.shooter.objects.Target;
 
 import javax.swing.*;
 import java.awt.*;

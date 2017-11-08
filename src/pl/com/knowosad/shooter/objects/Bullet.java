@@ -1,6 +1,6 @@
-package pl.com.knowosad.game1.objects;
+package pl.com.knowosad.shooter.objects;
 
-import pl.com.knowosad.game1.Game;
+import pl.com.knowosad.shooter.Game;
 
 import java.awt.*;
 import java.util.concurrent.CopyOnWriteArrayList;
