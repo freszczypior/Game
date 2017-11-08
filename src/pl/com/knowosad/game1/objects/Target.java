@@ -31,6 +31,6 @@ public class Target extends GameObject{
 
     @Override
     public void update(Game game) {
-
     }
+
 }

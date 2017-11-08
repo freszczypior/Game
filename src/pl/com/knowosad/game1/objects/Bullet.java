@@ -10,8 +10,9 @@ public class Bullet extends GameObject {
 
     private Player player;
     private CopyOnWriteArrayList<Target> targets;
+    private int targetsAmount;
     private int deltaY;
-    private int hitCounter;
+
 
     public Bullet(final Player player, CopyOnWriteArrayList<Target> targets, final int deltaY, final int xPos, final int yPos, final int width, final int height, final String img){
         this.player = player;
@@ -41,16 +42,11 @@ public class Bullet extends GameObject {
         if (rect.intersects(target.rect)) {
             game.targets.remove(target);
             game.bullets.remove(this);
-            hitCounter++;
         }
         yPos += deltaY;
         rect.y += deltaY;
 
-        if (yPos < 30)
+        if (yPos < 45)
             game.bullets.remove(this);
-    }
-
-    public int getHitCounter() {
-        return hitCounter;
     }
 }
